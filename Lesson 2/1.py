@@ -1,7 +1,8 @@
 import random
 b = random.randint(0, 100)
 
-print("I\nlove\npython")print(10 + 10) #Вам дано список чисел
+print("I\nlove\npython")
+print(10 + 10) #Вам дано список чисел
 
 
 b = 5
