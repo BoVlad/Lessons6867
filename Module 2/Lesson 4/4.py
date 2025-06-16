@@ -11,8 +11,7 @@ menu = """My ToDo List
 1. Додати
 2. Видалити
 3. Вивести список
------
-"""
+-----"""
 
 while True:
     print(menu)
