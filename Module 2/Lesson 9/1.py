@@ -54,11 +54,14 @@ while True:
                     print()
             else:
                 print("Ви не ввели цифру! Спробуйте ще раз.")
+                print()
         if choice == 4:
             break
         else:
             print("Такого вибору немає. Введіть один з пунктів.")
+            print()
     else:
         print("Ви не ввели цифру! Спробуйте ще раз.")
+        print()
 
 
