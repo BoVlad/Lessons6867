@@ -32,13 +32,13 @@ while True:
                 print(f"{listnum}. {i}", end="")
                 listnum = listnum + 1
             print()
-        if choice == 2:
+        elif choice == 2:
             new_doing = input("Введіть назву справи: ")
             with open("doings.txt", "a", encoding="utf-8") as file:
                 file.write(f"{new_doing}\n")
             print("Справу успішно додано!")
             print()
-        if choice == 3:
+        elif choice == 3:
             print(menu3_visual)
             print()
             choice3 = input("Введіть ваш вибір: ")
@@ -55,7 +55,7 @@ while True:
             else:
                 print("Ви не ввели цифру! Спробуйте ще раз.")
                 print()
-        if choice == 4:
+        elif choice == 4:
             break
         else:
             print("Такого вибору немає. Введіть один з пунктів.")
