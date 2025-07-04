@@ -5,7 +5,7 @@ from fontTools.varLib.instancer import instantiateMVAR
 menu_visual ="""--- HealthMate ---
 1. 💻 Ввести дані за сьогодні
 2. 📋 Показати статистику
-3. 📈 Вивести ідеї для покращення стану
+3. 📈 Вивести поради для покращення стану
 4. ❌ Скинути прогрес
 5. 🚪 Вийти
 """
@@ -135,6 +135,7 @@ def choice2():
     with open('HealthLog.txt', 'r', encoding='utf-8') as file:
         lines = file.readlines()
     try:
+        error = lines[-8]
         print("Статистика за вчора:")
         print(f"🛌 Ви спали годин: {lines[-8].replace("\n", "")}")
         print(f"💧  Ви випили склянок води: {lines[-7].replace("\n", "")}")
@@ -146,33 +147,36 @@ def choice2():
         print(f"💧  Ви випили склянок води: {lines[-3].replace("\n", "")}")
         print(f"🏃 У вас було хвилин активностей: {lines[-2].replace("\n", "")}")
         print(f"🙆 Ваше самопочуття на {lines[-1].replace("\n", "")} з 10")
+
+        number = 0
+        quantity = 0
+        number_temp = ""
+        for i in lines[1]:
+            if i == " ":
+                if number_temp != "":
+                    quantity = quantity + 1
+                    number = number + int(number_temp)
+                    number_temp = ""
+            else:
+                number_temp = number_temp + i
+        if number_temp != "":
+            quantity = quantity + 1
+            number = number + int(number_temp)
+        print(f"💕 Ваш Health Index (HI) становить {number // quantity}")
+
     except IndexError:
         try:
-            print("Статистики за вчора ще немає(")
+            error = lines[-4]
+            print("Статистика за вчора:")
+            print("Статистики за вчора ще немає 🙁")
+            print("---")
             print("Статистика за сьогодні:")
             print(f"🛌 Ви спали годин: {lines[-4].replace("\n", "")}")
             print(f"💧  Ви випили склянок води: {lines[-3].replace("\n", "")}")
             print(f"🏃 У вас було хвилин активностей: {lines[-2].replace("\n", "")}")
             print(f"🙆 Ваше самопочуття на {lines[-1].replace("\n", "")} з 10")
         except IndexError:
-            print("На жаль, ви ще не ввели дані хоча би один раз. Введіть дані що би подивитися поради!")
-            print()
-            return
-    number = 0
-    quantity = 0
-    number_temp = ""
-    for i in lines[1]:
-        if i == " ":
-            if number_temp != "":
-                quantity = quantity + 1
-                number = number + int(number_temp)
-                number_temp = ""
-        else:
-            number_temp = number_temp + i
-    if number_temp != "":
-        quantity = quantity + 1
-        number = number + int(number_temp)
-    print(f"💕 Ваш Health Index (HI) становить {number // quantity}")
+            print("На жаль, ви ще не ввели дані хоча би один раз. Введіть дані що би подивитися статистику!")
     print()
 
 
@@ -277,17 +281,20 @@ def choice3():
         lines_line2_yesterday = number / quantity
 
         if lines_line2_yesterday < lines_line2_today:
-            print("📈 Ваш Health Index (HI) покращився! Так тримати!")
+            print("📈 Ваш Health Index (HI) за останній день покращився! Так тримати!")
         if lines_line2_yesterday > lines_line2_today:
-            print("📉 Ваш Health Index (HI) зменшився! Це погано, його треба підвищувати!")
+            print("📉 Ваш Health Index (HI) за останній день зменшився! Це погано, його треба підвищувати!")
         if lines_line2_yesterday == lines_line2_today:
-            print("➖ Ваш Health Index (HI) такий самий! Не погано і не добре!")
+            print("➖ Ваш Health Index (HI) за останні дні такий самий! Не погано і не добре!")
     except IndexError:
         try:
             hours_sleep = int(lines[-4].replace("\n", ""))
             glass_water = int(lines[-3].replace("\n", ""))
             activity_minutes = int(lines[-2].replace("\n", ""))
             well_being = int(lines[-1].replace("\n", ""))
+            print("📊 Розберемо вчорашній день:")
+            print("Порад за вчора ще немає 🙁")
+            print("---")
             print("📊 Розберемо сьогодняшній день:")
             if hours_sleep < 8:
                 print("🛌❌ Ви спали замало, треба спати більше!")
@@ -312,7 +319,7 @@ def choice3():
             if 5 <= well_being <= 10:
                 print("🙆✅ Ви себе добре почуваєте! Це дуже круто!")
         except IndexError:
-            print("На жаль, ви ще не ввели дані хоча би один раз. Введіть дані що би подивитися статистику!")
+            print("На жаль, ви ще не ввели дані хоча би один раз. Введіть дані що би подивитися поради!")
     print()
 
 
