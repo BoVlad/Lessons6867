@@ -23,7 +23,7 @@ def choice1(time_now):
     with open("HealthLog.txt", "r", encoding="utf-8") as file:
         lines = file.readlines()
         time_basic = lines[0].replace("\n", "")
-    if int(time_now) - int(time_basic) >= 2:  # 64800
+    if int(time_now) - int(time_basic) >= 64800:  # 64800
         print("💻 Ви вибрали ввести дані за сьогодні. Повернутися в меню - 0, це не збереже ваші подальші записи. Якщо ви, можливо, щось не зробили, можете написати 1.")
         while True:
             hours_sleep = input("🛌 Введіть години сну: ")
