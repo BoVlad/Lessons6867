@@ -1,7 +1,5 @@
 import time
 
-from fontTools.varLib.instancer import instantiateMVAR
-
 menu_visual ="""--- HealthMate ---
 1. 💻 Ввести дані за сьогодні
 2. 📋 Показати статистику
@@ -115,11 +113,23 @@ def choice1(time_now):
             lines[1] = f"{lines[1].replace("\n", "")} {HI}\n"
         with open("HealthLog.txt", "w", encoding="utf-8") as file:
             file.writelines(lines)
-        with open("HealthLog.txt", "a", encoding="utf-8") as file:
-            file.write(f"{hours_sleep}\n")
-            file.write(f"{glass_water}\n")
-            file.write(f"{activity_minutes}\n")
-            file.write(f"{well_being}\n")
+        try:
+            lines[-8] = lines[-4]
+            lines[-7] = lines[-3]
+            lines[-6] = lines[-2]
+            lines[-5] = lines[-1]
+            lines[-4] = f"{hours_sleep}\n"
+            lines[-3] = f"{glass_water}\n"
+            lines[-2] = f"{activity_minutes}\n"
+            lines[-1] = f"{well_being}\n"
+            with open("HealthLog.txt", "w", encoding="utf-8") as file:
+                file.writelines(lines)
+        except IndexError:
+            with open("HealthLog.txt", "a", encoding="utf-8") as file:
+                file.write(f"{hours_sleep}\n")
+                file.write(f"{glass_water}\n")
+                file.write(f"{activity_minutes}\n")
+                file.write(f"{well_being}\n")
         print("✅ Дані успішно додано!")
         print()
         return
@@ -162,7 +172,10 @@ def choice2():
         if number_temp != "":
             quantity = quantity + 1
             number = number + int(number_temp)
+        print("---")
         print(f"💕 Ваш Health Index (HI) становить {number // quantity}")
+        print("---")
+        print(f"📅 Ви користуєтесь програмою днів: {quantity}")
 
     except IndexError:
         try:
@@ -175,6 +188,8 @@ def choice2():
             print(f"💧  Ви випили склянок води: {lines[-3].replace("\n", "")}")
             print(f"🏃 У вас було хвилин активностей: {lines[-2].replace("\n", "")}")
             print(f"🙆 Ваше самопочуття на {lines[-1].replace("\n", "")} з 10")
+            print("---")
+            print("📅 Ви користуєтесь програмою 1 день")
         except IndexError:
             print("На жаль, ви ще не ввели дані хоча би один раз. Введіть дані що би подивитися статистику!")
     print()
