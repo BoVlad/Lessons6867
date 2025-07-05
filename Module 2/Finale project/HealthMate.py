@@ -2,12 +2,6 @@ import HealthMateDefs as HMD
 import time
 
 HMD.startmakefile()
-# with open('HealthLog.txt', 'r', encoding='utf-8') as file:
-#     lines = file.readlines()
-#
-# for line in lines[1:6]:
-#     print(line, end="")
-
 
 while True:
     print(HMD.menu_visual)
