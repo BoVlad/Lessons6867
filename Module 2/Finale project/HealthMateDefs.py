@@ -174,7 +174,6 @@ def choice2():
             number = number + int(number_temp)
         print("---")
         print(f"💕 Ваш Health Index (HI) становить {number // quantity}")
-        print("---")
         print(f"📅 Ви користуєтесь програмою днів: {quantity}")
 
     except IndexError:
