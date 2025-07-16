@@ -1,5 +1,9 @@
 import tkinter as tk
 from tkinter import messagebox
+import time
+
+running = False
+delay = 0
 
 root = tk.Tk()
 root.title("Auto Clicker")
@@ -34,11 +38,26 @@ entry1.place(relx=0.5, rely=0.5,
 
 def start_autoclicker():
     tk.messagebox.showinfo("AutoClicker", "Автоклікер запущено!")
-    Button1.configure()
+    global running, delay
+    clicks_per_second = int(entry1.get())
+    delay = 1 / clicks_per_second
+    running = True
+    schedule_click()
+
+def schedule_click():
+    if running:
+        print("Клац!")
+        time.sleep(delay)
+        schedule_click()
 
 def stop_autoclicker():
+    global running, delay
+    running = False
+    delay = 0
     tk.messagebox.showinfo("AutoClicker", "Автоклікер зупинено!")
 
+def show_info(event):
+    tk.messagebox.showinfo("AutoClicker", "Це автоклікер, він буде клікати мишкою зі швидкістю, яку ти вкажеш!")
 
 
 Button1 = tk.Button(root,
@@ -63,5 +82,7 @@ Button2 = tk.Button(root,
 Button2.place(relx=0.7, rely=0.8,
              anchor="center")
 
+
+root.bind("i", show_info)
 
 root.mainloop()
