@@ -1,1 +1,10 @@
+import requests
 
+url = "https://rickandmortyapi.com/api/character"
+
+responce = requests.get(url)
+data = responce.json()
+
+
+for i in range(20):
+    print(data["results"][i]["name"])
