@@ -1,1 +1,42 @@
+import tkinter as tk
 
+# Створюємо головне вікно
+root = tk.Tk()
+root.title("Мій додаток")
+root.geometry("500x500")
+root.resizable(False, False)
+
+
+# Створюємо меню
+menubar = tk.Menu(root)
+
+
+def red():
+    root.config(bg="red")
+def purple():
+    root.config(bg="purple")
+def green():
+    root.config(bg="green")
+def yellow():
+    root.config(bg="yellow")
+def blue():
+    root.config(bg="blue")
+
+
+# Додаємо перший пункт меню
+file_menu1 = tk.Menu(menubar, tearoff=0)
+file_menu1.add_command(label="Червоний", command=red)
+file_menu1.add_command(label="Фіолетовий", command=purple)
+file_menu1.add_command(label="Зелений", command=green)
+file_menu1.add_command(label="Жовтий", command=yellow)
+file_menu1.add_command(label="Синій", command=blue)
+
+
+
+# Додаємо два підменю в головне меню
+menubar.add_cascade(label="Змінити колір", menu=file_menu1)
+
+# Додаємо головне меню у вікно
+root.config(menu=menubar)
+
+root.mainloop()
