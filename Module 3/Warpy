@@ -1,0 +1,230 @@
+import customtkinter as ctk
+import tkinter as tk
+import WarpyTech as wpt
+from tkinter import messagebox
+
+try:
+    with open("Warpylog.txt", "r", encoding="utf-8") as file:
+        filestart = file.readlines()
+except FileNotFoundError:
+    with open("Warpylog.txt", "w", encoding="utf-8") as file:
+        file.write("1\n")
+        file.write("\n")
+
+root = ctk.CTk()
+root.geometry("1400x800")
+root.title("Warpy")
+root.resizable(False, False)
+rootbgimage = tk.PhotoImage(file="bg.png")
+rootingameimage = tk.PhotoImage(file="ingamebg.png")
+
+rootbg = ctk.CTkCanvas(root, width=500, height=500)
+
+gameframe = ctk.CTkFrame(root)
+
+mainbutton1 = ctk.CTkButton(root, text="Нова гра", font=("Arial", 70, "bold"))
+mainbutton2 = ctk.CTkButton(root, text="Завантажити", font=("Arial", 70, "bold"))
+mainbutton3 = ctk.CTkButton(root, text="Інформація", font=("Arial", 70, "bold"))
+
+newgamebutton1 = ctk.CTkButton(root, text="Почати гру", font=("Arial", 70, "bold"))
+newgamebutton2 = ctk.CTkButton(root, text="Назад", font=("Arial", 70, "bold"))
+newgamechoose1var = ctk.StringVar(value="Нормальна складність")
+newgamechoose1 = ctk.CTkOptionMenu(root, variable=newgamechoose1var,
+                                   values=["Нормальна складність"], font=("Arial", 20, "bold"))
+
+newgamechoose2var = ctk.StringVar(value="Сучасніть")
+newgamechoose2 = ctk.CTkOptionMenu(root, variable=newgamechoose2var,
+                                   values=["Сучасніть", "Друга світова війна"],
+                                   font=("Arial", 20, "bold"))
+newgamechoose3var = ctk.StringVar(value="Німеччина")
+newgamechoose3 = ctk.CTkOptionMenu(root, variable=newgamechoose3var,
+                                   values=["Україна", "Росія", "Чехія", "Польща", "Чехословаччина", "Австрія", "Угорщина", "Югославія", "Румунія", "Німеччина"],
+                                   font=("Arial", 20, "bold"))
+newgamechoose4var = ctk.StringVar(value="СРСР")
+newgamechoose4 = ctk.CTkOptionMenu(root, variable=newgamechoose4var,
+                                   values=["СРСР", "Польща", "Чехословаччина", "Австрія", "Угорщина", "Югославія", "Румунія", "Німеччина"],
+                                   font=("Arial", 20, "bold"))
+menubar = tk.Menu(root)
+theme_menu = tk.Menu(menubar, tearoff=0)
+theme_menu.add_command(label="Світла тема")
+theme_menu.add_command(label="Темна тема")
+menubar.add_cascade(label="Налаштування", menu=theme_menu)
+root.config(menu=menubar)
+
+
+
+ingamebutton_nextmove = ctk.CTkButton(root, text="Наступний хід", font=("Arial", 70, "bold"))
+
+
+
+
+ROWS = 10
+COLS = 14
+CELLWIDTHBASIC = 65
+CELLHEIGHTBASIC = 65
+
+playercountry_name = ""
+playercountry_color = ""
+playercountry_info = {"citizens_numb": None, "citizen_satisfaction": 5, "army_research": 1}
+
+buttonslist = []
+
+
+
+
+def mainmenu():
+    def mainbutton1def():
+        mainbutton1.place_forget()
+        mainbutton2.place_forget()
+        mainbutton3.place_forget()
+        mainmenunewgame()
+    def mainbutton2def():
+        mainbutton1.place_forget()
+        mainbutton2.place_forget()
+        mainbutton3.place_forget()
+        mainmenuupload()
+    def mainbutton3def():
+        tk.messagebox.showinfo("Warpy", "Warpy - це військова гра-стратегія де треба завоювати весь світ."
+                                        "") #TODO закончить инфу
+    mainbutton1.configure(command=mainbutton1def)
+    mainbutton1.place(relx=0.5, rely=0.55, anchor="center")
+    mainbutton2.configure(command=mainbutton2def)
+    mainbutton2.place(relx=0.5, rely=0.70, anchor="center")
+    mainbutton3.configure(command=mainbutton3def)
+    mainbutton3.place(relx=0.5, rely=0.85, anchor="center")
+    rootbg.create_image(700, 400, image=rootbgimage, anchor="center")
+    rootbg.pack(fill="both", expand=True)
+mainmenu()
+
+def mainmenunewgame():
+    def yearchoice(newgamechoose2var):
+        if newgamechoose2var == "Сучасніть":
+            newgamechoose4.place_forget()
+            newgamechoose3.place(relx=0.6, rely=0.67, anchor="center")
+        if newgamechoose2var == "Друга світова війна":
+            newgamechoose3.place_forget()
+            newgamechoose4.place(relx=0.6, rely=0.67, anchor="center")
+    def newgamebutton1def():
+        global playercountry_name, playercountry_color
+        year = newgamechoose2var.get()
+        if year == "Сучасніть": #TODO дописать современность
+            playercountry_name = newgamechoose3var.get()
+        if year == "Друга світова війна":
+            playercountry_name = newgamechoose4var.get()
+            playercountry_color = wpt.country_colors_WW2.get(playercountry_name)
+            newgamebutton1.place_forget()
+            newgamebutton2.place_forget()
+            newgamechoose1.place_forget()
+            newgamechoose2.place_forget()
+            newgamechoose3.place_forget()
+            newgamechoose4.place_forget()
+            rootbg.create_image(700, 400, image=rootingameimage, anchor="center")
+            rootbg.pack(fill="both", expand=True)
+            gameframe.place(relx=0.5, rely=0.5, anchor="center")
+            cellwidth = 65
+            cellheight = 65
+            cellspacing = 66
+            buttindex = 0
+            for i in range(ROWS):
+                for j in range(COLS):
+                    index = i * COLS + j
+                    color = wpt.cell_colors_WW2[index]
+                    newcell = wpt.cell_structure_WW2[index]
+                    newtextcolor = wpt.font_colors_WW2[color]
+                    countryininfo = wpt.country_colors_invert_WW2[color]
+                    if newcell == "0":
+                        continue
+                    if newcell == "1":
+                        cellwidth = CELLWIDTHBASIC
+                        cellheight = CELLHEIGHTBASIC
+                    if newcell == "2":
+                        cellwidth = CELLWIDTHBASIC * 4 + 3
+                        cellheight = CELLHEIGHTBASIC
+                    if newcell == "3":
+                        cellwidth = CELLWIDTHBASIC * 2 + 1
+                        cellheight = CELLHEIGHTBASIC * 2 + 1
+                    if newcell == "4":
+                        cellwidth = CELLWIDTHBASIC
+                        cellheight = CELLHEIGHTBASIC * 3 + 2
+                    if newcell == "5":
+                        cellwidth = CELLWIDTHBASIC * 2 + 1
+                        cellheight = CELLHEIGHTBASIC * 3 + 2
+                    if newcell == "6":
+                        cellwidth = CELLWIDTHBASIC * 2 + 1
+                        cellheight = CELLHEIGHTBASIC
+                    if newcell == "7":
+                        cellwidth = CELLWIDTHBASIC
+                        cellheight = CELLHEIGHTBASIC * 2 + 1
+                    if newcell == "8":
+                        cellwidth = CELLWIDTHBASIC * 3 + 2
+                        cellheight = CELLHEIGHTBASIC
+                    btn = ctk.CTkButton(gameframe, text=f"{i},{j}", fg_color=color,
+                                        width=cellwidth, height=cellheight,
+                                        command=lambda indexdef=buttindex: on_left_click(indexdef),
+                                        font=("Arial", 15, "bold"),
+                                        text_color=newtextcolor)
+                    x = j * cellspacing
+                    y = i * cellspacing
+                    btn.place(x=x, y=y, anchor="nw")
+                    playercontrybtn = False
+                    if countryininfo == playercountry_name:
+                        playercontrybtn = True
+                    if countryininfo != playercountry_name:
+                        playercontrybtn = False
+                    btn.info = {"Shaft": None,
+                                "Bank": None,
+                                "Nuke": None,
+                                "AviationArmy": None,
+                                "GroundArmy": None,
+                                "University": None,
+                                "Country": countryininfo,
+                                "Index": index,
+                                "Playercountrybtn": playercontrybtn}
+                    buttonslist.append(btn)
+                    buttindex = buttindex + 1
+            gameframe.configure(width=923, height=659)
+
+
+        # print(buttonslist)
+        # print(buttonslist[20].info.get(1))
+
+
+
+
+
+
+
+
+    def newgamebutton2def():
+        newgamebutton1.place_forget()
+        newgamebutton2.place_forget()
+        newgamechoose1.place_forget()
+        newgamechoose2.place_forget()
+        newgamechoose3.place_forget()
+        newgamechoose4.place_forget()
+        mainmenu()
+    def newgamechoose1def():
+        pass
+    newgamebutton1.configure(command=newgamebutton1def)
+    newgamebutton1.place(relx=0.5, rely=0.55, anchor="center")
+    newgamechoose1.place(relx=0.4, rely=0.622, anchor="center")
+    newgamechoose2.place(relx=0.6, rely=0.622, anchor="center")
+    newgamechoose2.configure(command=yearchoice)
+    newgamechoose3.place(relx=0.6, rely=0.67, anchor="center")
+    newgamebutton2.configure(command=newgamebutton2def)
+    newgamebutton2.place(relx=0.5, rely=0.85, anchor="center")
+def mainmenuupload():
+    pass
+
+
+
+
+def on_left_click(indexdef):
+    print(buttonslist[indexdef].info.get("Index"))
+    print(buttonslist[indexdef].info.get("Country"))
+    print(buttonslist[indexdef].info.get("Playercountrybtn"))
+
+
+theme_menu.entryconfig("Світла тема", label="123")
+
+root.mainloop()
