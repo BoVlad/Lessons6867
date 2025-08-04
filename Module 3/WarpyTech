@@ -32,7 +32,7 @@ cell_colors_WW2 = [
 
 country_colors_WW2 = {"СРСР":"red",
                       "Польща":"LemonChiffon1",
-                      "Чехословаччина":"LightSeaGreen",
+                      "Чехословач.":"LightSeaGreen",
                       "Австрія":"LightGreen",
                       "Угорщина":"OliveDrab3",
                       "Югославія":"magenta",
@@ -42,7 +42,7 @@ country_colors_WW2 = {"СРСР":"red",
 
 country_colors_invert_WW2 = {"red":"СРСР",
                       "LemonChiffon1":"Польща",
-                      "LightSeaGreen":"Чехословаччина",
+                      "LightSeaGreen":"Чехословач.",
                       "LightGreen":"Австрія",
                       "OliveDrab3":"Угорщина",
                       "magenta":"Югославія",
