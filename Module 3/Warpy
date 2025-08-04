@@ -68,7 +68,7 @@ researchpointslabel = ctk.CTkLabel(root, font=("Arial", 20, "bold"), width=280, 
 newslabel1 = ctk.CTkLabel(root, font=("Arial", 30, "bold"), text="Новини", width=220, height=50)
 newslabel2 = ctk.CTkLabel(root, font=("Arial", 18, "bold"), text="Порожньо", width=220, height=500,
                           anchor="nw", justify="left", pady=10, padx=10)
-playercountrylabel = ctk.CTkLabel(root, font=("Arial", 20, "bold"), width=280, height=55)
+playercountrymove = ctk.CTkLabel(root, font=("Arial", 20, "bold"), width=280, height=55)
 
 ingamebutton_nextmove = ctk.CTkButton(root, text="Наступний хід", font=("Arial", 70, "bold"), width=220, height=100)
 
@@ -76,7 +76,7 @@ ingamebutton_nextmove = ctk.CTkButton(root, text="Наступний хід", fo
 sliderslider = ctk.CTkSlider(sliderframe, from_=1, to=10000)
 sliderbuttonconfirm = ctk.CTkButton(sliderframe, text="Підтвердити", font=("Arial", 40, "bold"))
 sliderbuttonexit = ctk.CTkButton(sliderframe, text="Скасувати", font=("Arial", 40, "bold"))
-sliderbuttonlabel = ctk.CTkLabel(sliderframe, font=("Arial", 20, "bold"), text=0)
+sliderbuttonlabel = ctk.CTkLabel(sliderframe, font=("Arial", 20, "bold"), text="0")
 
 savechoice = 0
 
@@ -88,6 +88,8 @@ currentaction = False
 currentactionin4 = False
 tempcolor = ""
 isitsame = ""
+mainbuttonindex = 0
+slidervalue = ""
 
 playercountry = {"armyresearch": 0,
                  "researchpoint": 2000,
@@ -134,7 +136,7 @@ def mainmenu():
         mainmenuupload()
     def mainbutton3def():
         tk.messagebox.showinfo("Warpy", "Warpy - це військова гра-стратегія де треба завоювати весь світ."
-                                        "") #TODO закончить инфу
+                                        "")
     mainbutton1.configure(command=mainbutton1def)
     mainbutton1.place(relx=0.5, rely=0.55, anchor="center")
     mainbutton2.configure(command=mainbutton2def)
@@ -158,7 +160,7 @@ def mainmenunewgame():
     def newgamebutton1def():
         global labelslottext1, labelslottext2, labelslottext3, playercountry
         year = newgamechoose2var.get()
-        if year == "Сучасніть": #TODO дописать современность
+        if year == "Сучасніть":
             playercountry["name"] = newgamechoose3var.get()
         if year == "Друга світова війна":
             playercountry["name"] = newgamechoose4var.get()
@@ -276,7 +278,8 @@ def mainmenunewgame():
                                     "Country": countryininfo,
                                     "Index": index,
                                     "War": False,
-                                    "Playercountrybtn": playercontrybtn}
+                                    "Playercountrybtn": playercontrybtn,
+                                    "Canmove": True}
                         buttonslist.append(btn)
                         buttindex = buttindex + 1
                 gameframe.configure(width=923, height=659)
@@ -284,8 +287,8 @@ def mainmenunewgame():
                 newslabel2.place(relx=0.915, rely=0.55, anchor="center")
                 moneylabel.configure(text=f"Грошей\n{playercountry.get("money")} (+{playercountry.get("moneyprofit") - playercountry.get("expenses")})")
                 moneylabel.place(relx=0.292, rely=0.045, anchor="center")
-                playercountrylabel.configure(text=f"Обрана дія\nПорожньо")
-                playercountrylabel.place(relx=0.5, rely=0.045, anchor="center")
+                playercountrymove.configure(text=f"Обрана дія\nПорожньо")
+                playercountrymove.place(relx=0.5, rely=0.045, anchor="center")
                 researchpointslabel.configure(text=f"Очків дослідження\n{playercountry.get("researchpoint")} (+{playercountry.get("researchpointprofit")})")
                 researchpointslabel.place(relx=0.708, rely=0.045, anchor="center")
 
@@ -377,10 +380,10 @@ def mainmenuupload():
 
 
 def on_left_click(indexdef):
-    global playercountry, buttonslist, currentaction, currentactionin4
-    
+    global playercountry, buttonslist, currentaction, currentactionin4, tempcolor, mainbuttonindex
+
     def commandplayer(commandnumb):
-        global playercountry
+        global playercountry, buttonslist
         if commandnumb == 0:
             if buttonslist[indexdef].info.get("Shaft") < 5:
                 if playercountry.get("money") >= 2000:
@@ -476,8 +479,23 @@ def on_left_click(indexdef):
                 sliderframe.configure(height=400, width=700)
                 sliderframe.place(relx=0.5, rely=0.5, anchor="center")
         if commandnumb == 5:
-            
-        
+            global currentaction, mainbuttonindex, slidervalue, tempcolor
+            if buttonslist[indexdef].info.get("Army") > 0:
+                if buttonslist[indexdef].info.get("Canmove"):
+                    mainbuttonindex = indexdef
+                    tempcolor = buttonslist[mainbuttonindex].cget("fg_color")
+
+
+                    buttonslist[mainbuttonindex].configure(fg_color="orange red")
+                    playercountrymove.configure(
+                        text=f"Обрана дія (для відміни натисніть на ту саму кнопку)\nПеревезти воїнів на іншу позицію",
+                        font=("Arial", 10, "bold"))
+                    buttonslist[mainbuttonindex].configure(fg_color="orange red")
+                    currentaction = True
+                else:
+                    messagebox.showerror("Warpy", "У вас ще не має воїнів в цьому місці.")
+                    return
+
         if commandnumb == 6:
             if buttonslist[indexdef].info.get("Army") > 0:
                 def confirmplayer6():
@@ -541,12 +559,60 @@ def on_left_click(indexdef):
             x = root.winfo_pointerx()
             y = root.winfo_pointery()
             contextmenu_playercountry.tk_popup(x, y)
+    else:
+        if buttonslist[indexdef].info.get("Playercountrybtn"):
+            if buttonslist[indexdef].info.get("Army") < 10000:
+                if indexdef == mainbuttonindex:
+                    currentaction = False
+                    buttonslist[mainbuttonindex].configure(fg_color=tempcolor)
+                    playercountrymove.configure(text=f"Обрана дія\nПорожньо")
+                    return
+                else:
+                    def confirmplayer5():
+                        global slidervalue, currentaction, mainbuttonindex
+                        sliderslider.place_forget()
+                        sliderbuttonlabel.place_forget()
+                        sliderbuttonconfirm.place_forget()
+                        sliderbuttonexit.place_forget()
+                        sliderframe.place_forget()
+                        slidervalue = int(sliderslider.get())
+                        buttonslist[indexdef].info["Army"] = buttonslist[indexdef].info.get("Army") - int(
+                            sliderslider.get())
+                        if buttonslist[mainbuttonindex].info.get("Army") > 0:
+                            buttonslist[mainbuttonindex].configure(text=f"{buttonslist[mainbuttonindex].info.get("Country")}\n{buttonslist[mainbuttonindex].info.get("Army")}")
+                        else:
+                            buttonslist[mainbuttonindex].configure(text=f"{buttonslist[mainbuttonindex].info.get("Country")}")
 
 
+                    if buttonslist[indexdef].info.get("Army") < 10000:
+                        if playercountry.get("money") < 10000:
+                            slidermaxcomparison = 10000 - buttonslist[indexdef].info.get("Army")
+                            if sliderslidermax >= slidermaxcomparison:
+                                sliderslidermax = slidermaxcomparison
+                            if sliderslidermax <= 0:
+                                messagebox.showerror("Warpy", "У вас замало грошей, ви не можете найняти воїнів")
+                                return
+                        else:
+                            sliderslidermax = 10000 - buttonslist[indexdef].info.get("Army")
+
+
+                    sliderslider.set(0)
+                    sliderslider.configure(from_=1, to=(int(buttonslist[indexdef].info["Army"])),
+                                           command=lambda value: sliderbuttonlabel.configure(text=int(value)))
+                    sliderslider.place(relx=0.5, rely=0.5, anchor="center")
+                    sliderbuttonlabel.place(relx=0.5, rely=0.6, anchor="center")
+                    sliderbuttonconfirm.configure(command=confirmplayer5)
+                    sliderbuttonconfirm.place(relx=0.5, rely=0.7, anchor="center")
+                    sliderbuttonexit.configure(command=exitbutton)
+                    sliderbuttonexit.place(relx=0.5, rely=0.9, anchor="center")
+                    sliderframe.configure(height=400, width=700)
+                    sliderframe.place(relx=0.5, rely=0.5, anchor="center")
 
     # x = root.winfo_pointerx()
     # y = root.winfo_pointery()
-    # contextmenu_playercountry.tk_popup(x, y)
+
+
+# contextmenu_playercountry.tk_popup(x, y)
 
 # btn.info = {"Shaft": 0,
 #                                     "Bank": 0,
