@@ -1,0 +1,39 @@
+class Animal:
+    def __init__(self, name, age, weight):
+        self.name = name
+        self.age = age
+        self.weight = weight
+
+    def __str__(self):
+        return f"I am cool {
+        self.name
+        }"
+
+    def breath(self):
+        print("I am animal. I can breath")
+
+    def walk(self):
+        print("I am animal. I can walk")
+
+    def makesound(self):
+        print("Sound")
+
+class Dog(Animal):
+    def makesound(self):
+        print("Woof-Woof")
+    def bite(self):
+        print("Arrrrggggggggggggg!!!")
+
+class Cat(Animal):
+    def makesound(self):
+        print("Mow-Mow")
+    def walk(self):
+        print("I am cat. I can play with my tail")
+
+haski = Dog("Haski", 5, 10)
+haski.walk()
+haski.makesound()
+
+murka = Cat("murka", 3, 3)
+murka.breath()
+murka.makesound()
