@@ -1,0 +1,19 @@
+# Створити клас Собака, у якій будуть поля - ім'я, вік, вага
+# І метод - гавкати(bark) -  (print“Woof-Woof”)
+# Потім створити об'єкт цього класу
+# І заставити його гавкати
+
+class Dog:
+    def __init__(self, name, age, weight):
+        self.name = name
+        self.age = age
+        self.weight = weight
+
+    def __str__(self):
+        return f"I am cool {self.name}"
+
+    def bark(self):
+        print("Woof-Woof")
+
+labrador = Dog("Gitya", 8, 32)
+labrador.bark()
