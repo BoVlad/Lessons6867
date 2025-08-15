@@ -1,0 +1,13 @@
+import customtkinter as ctk
+
+app = ctk.CTk()
+
+def button_pressed():
+    print("button pressed")
+
+app.title("Dodator custom tk")
+
+button = ctk.CTkButton(app, command=button_pressed, text="press me")
+button.pack(pady=20)
+
+app.mainloop()

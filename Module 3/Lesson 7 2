@@ -1,0 +1,20 @@
+# filter
+# map
+# lambda
+
+fruits = ["banana", "apple", "watermelon", "barbaris", "pomelo", "brokkoli"]
+
+numbers = [2, 5, 7, 67, 56, 23, 109, 1488, 6, 4]
+
+# def startb(fruits):
+#     return fruits.startswith("b")
+
+# def is_odd(x):
+#     if x % 2 == 0:
+#         return x
+
+new_fruits = list(filter(lambda fruit: fruit.startwith("b"), fruits))
+print(new_fruits)
+
+new_numbers = list(filter(lambda x: x % 2 == 0, numbers))
+print(new_numbers)

@@ -1,0 +1,633 @@
+import customtkinter as ctk
+import tkinter as tk
+import WarpyTech as wpt
+import random
+from tkinter import messagebox
+
+try:
+    with open("WarpyLog.txt", "r", encoding="utf-8") as file:
+        filestart = file.readlines()
+except FileNotFoundError:
+    with open("WarpyLog.txt", "w", encoding="utf-8") as file:
+        file.write("\n")
+        file.write("\n")
+        file.write("\n")
+        file.write("\n")
+        file.write("\n")
+        file.write("\n")
+        file.write("\n")
+        file.write("\n")
+        file.write("\n")
+        file.write("\n")
+        file.write("\n")
+
+root = ctk.CTk()
+root.geometry("1400x800")
+root.title("Warpy")
+root.resizable(False, False)
+rootbgimage = tk.PhotoImage(file="bg.png")
+rootingameimage = tk.PhotoImage(file="ingamebg.png")
+
+rootbg = ctk.CTkCanvas(root, width=500, height=500)
+
+gameframe = ctk.CTkFrame(root)
+sliderframe = ctk.CTkFrame(root)
+
+mainbutton1 = ctk.CTkButton(root, text="Нова гра", font=("Arial", 70, "bold"))
+mainbutton2 = ctk.CTkButton(root, text="Завантажити", font=("Arial", 70, "bold"))
+mainbutton3 = ctk.CTkButton(root, text="Інформація", font=("Arial", 70, "bold"))
+
+newgamebutton1 = ctk.CTkButton(root, text="Почати гру", font=("Arial", 70, "bold"))
+newgamebutton2 = ctk.CTkButton(root, text="Назад", font=("Arial", 70, "bold"))
+newgamechoose1var = ctk.StringVar(value="Нормальна складність")
+newgamechoose1 = ctk.CTkOptionMenu(root, variable=newgamechoose1var,
+                                   values=["Нормальна складність"], font=("Arial", 20, "bold"))
+
+newgamechoose2var = ctk.StringVar(value="Сучасніть (в розробці)")
+newgamechoose2 = ctk.CTkOptionMenu(root, variable=newgamechoose2var,
+                                   values=["Сучасніть (в розробці)", "Друга світова війна"],
+                                   font=("Arial", 20, "bold"))
+newgamechoose3var = ctk.StringVar(value="Німеччина")
+newgamechoose3 = ctk.CTkOptionMenu(root, variable=newgamechoose3var,
+                                   values=["Україна", "Росія", "Чехія", "Польща", "Чехословаччина", "Австрія", "Угорщина", "Югославія", "Румунія", "Німеччина"],
+                                   font=("Arial", 20, "bold"))
+newgamechoose4var = ctk.StringVar(value="СРСР")
+newgamechoose4 = ctk.CTkOptionMenu(root, variable=newgamechoose4var,
+                                   values=["СРСР", "Польща", "Чехословаччина", "Австрія", "Угорщина", "Югославія", "Румунія", "Німеччина"],
+                                   font=("Arial", 20, "bold"))
+
+labelslot1 = ctk.CTkLabel(root, font=("Arial", 20, "bold"), width=280, height=400)
+buttonslot1 = ctk.CTkButton(root, text="Зберігати тут", font=("Arial", 40, "bold"))
+labelslot2 = ctk.CTkLabel(root, font=("Arial", 20, "bold"), width=280, height=400)
+buttonslot2 = ctk.CTkButton(root, text="Зберігати тут", font=("Arial", 40, "bold"))
+labelslot3 = ctk.CTkLabel(root, font=("Arial", 20, "bold"), width=280, height=400)
+buttonslot3 = ctk.CTkButton(root, text="Зберігати тут", font=("Arial", 40, "bold"))
+
+moneylabel = ctk.CTkLabel(root, font=("Arial", 20, "bold"), width=280, height=55)
+researchpointslabel = ctk.CTkLabel(root, font=("Arial", 20, "bold"), width=280, height=55)
+newslabel1 = ctk.CTkLabel(root, font=("Arial", 30, "bold"), text="Новини", width=220, height=50)
+newslabel2 = ctk.CTkLabel(root, font=("Arial", 18, "bold"), text="Порожньо", width=220, height=500,
+                          anchor="nw", justify="left", pady=10, padx=10)
+playercountrymove = ctk.CTkLabel(root, font=("Arial", 20, "bold"), width=280, height=55)
+
+ingamebutton_nextmove = ctk.CTkButton(root, text="Наступний хід", font=("Arial", 70, "bold"), width=220, height=100)
+
+
+sliderslider = ctk.CTkSlider(sliderframe, from_=1, to=10000)
+sliderbuttonconfirm = ctk.CTkButton(sliderframe, text="Підтвердити", font=("Arial", 40, "bold"))
+sliderbuttonexit = ctk.CTkButton(sliderframe, text="Скасувати", font=("Arial", 40, "bold"))
+sliderbuttonlabel = ctk.CTkLabel(sliderframe, font=("Arial", 20, "bold"), text="0")
+
+savechoice = 0
+
+ROWS = 10
+COLS = 14
+CELLWIDTHBASIC = 65
+CELLHEIGHTBASIC = 65
+currentaction = False
+currentactionin4 = False
+tempcolor = ""
+isitsame = ""
+mainbuttonindex = 0
+slidervalue = ""
+
+playercountry = {"armyresearch": 0,
+                 "researchpoint": 2000,
+                 "researchpointprofit": 1,
+                 "expenses": 10,
+                 "money": 10000,
+                 "moneyprofit": 100,
+                 "name": "",
+                 "color": ""}
+
+buttonslist = []
+
+labelslottext1 = ""
+labelslottext2 = ""
+labelslottext3 = ""
+
+
+contextmenu_playercountry = tk.Menu(root, tearoff=0)
+contextmenu_playercountry.add_command(label="Побудувати шахту")
+contextmenu_playercountry.add_command(label="Побудувати банк")
+contextmenu_playercountry.add_command(label="Побудувати університет")
+contextmenu_playercountry.add_command(label="Побудувати військову інфраструктуру")
+contextmenu_playercountry.add_command(label="Найняти військо")
+contextmenu_playercountry.add_command(label="Перемістити військо")
+contextmenu_playercountry.add_command(label="Звільнити військо")
+
+armyresearchbutton1 = ctk.CTkButton(root, font=("Arial", 12, "bold"), text=f"Дослідження військ 1 ({playercountry.get("researchpoint")}/5)\nCила військ x2", width=220, height=50)
+armyresearchbutton2 = ctk.CTkButton(root, font=("Arial", 12, "bold"), text=f"Дослідження військ 2 ({playercountry.get("researchpoint")}/25)\nCила військ x3", width=220, height=50)
+armyresearchbutton3 = ctk.CTkButton(root, font=("Arial", 12, "bold"), text=f"Дослідження військ 3 ({playercountry.get("researchpoint")}/70)\nCила військ x4", width=220, height=50)
+armyresearchbutton4 = ctk.CTkButton(root, font=("Arial", 12, "bold"), text=f"Дослідження військ 4 ({playercountry.get("researchpoint")}/150)\nCила військ x5", width=220, height=50)
+armyresearchbutton5 = ctk.CTkButton(root, font=("Arial", 12, "bold"), text=f"Дослідження військ 5 ({playercountry.get("researchpoint")}/300)\nCила військ x10", width=220, height=50)
+
+
+def mainmenu():
+    def mainbutton1def():
+        mainbutton1.place_forget()
+        mainbutton2.place_forget()
+        mainbutton3.place_forget()
+        mainmenunewgame()
+    def mainbutton2def():
+        mainbutton1.place_forget()
+        mainbutton2.place_forget()
+        mainbutton3.place_forget()
+        mainmenuupload()
+    def mainbutton3def():
+        tk.messagebox.showinfo("Warpy", "Warpy - це військова гра-стратегія де треба завоювати весь світ."
+                                        "")
+    mainbutton1.configure(command=mainbutton1def)
+    mainbutton1.place(relx=0.5, rely=0.55, anchor="center")
+    mainbutton2.configure(command=mainbutton2def)
+    mainbutton2.place(relx=0.5, rely=0.70, anchor="center")
+    mainbutton3.configure(command=mainbutton3def)
+    mainbutton3.place(relx=0.5, rely=0.85, anchor="center")
+    rootbg.create_image(700, 400, image=rootbgimage, anchor="center")
+    rootbg.pack(fill="both", expand=True)
+mainmenu()
+
+
+
+def mainmenunewgame():
+    def yearchoice(newgamechoose2var):
+        if newgamechoose2var == "Сучасніть":
+            newgamechoose4.place_forget()
+            newgamechoose3.place(relx=0.6, rely=0.67, anchor="center")
+        if newgamechoose2var == "Друга світова війна":
+            newgamechoose3.place_forget()
+            newgamechoose4.place(relx=0.6, rely=0.67, anchor="center")
+    def newgamebutton1def():
+        global labelslottext1, labelslottext2, labelslottext3, playercountry
+        year = newgamechoose2var.get()
+        if year == "Сучасніть":
+            playercountry["name"] = newgamechoose3var.get()
+        if year == "Друга світова війна":
+            playercountry["name"] = newgamechoose4var.get()
+            playercountry["color"] = wpt.country_colors_WW2.get(playercountry["name"])
+            newgamebutton1.place_forget()
+            newgamebutton2.place_forget()
+            newgamechoose1.place_forget()
+            newgamechoose2.place_forget()
+            newgamechoose3.place_forget()
+            newgamechoose4.place_forget()
+
+            with open('WarpyLog.txt', 'r', encoding='utf-8') as file:
+                lines = file.readlines()
+
+            linescheck3 = lines[9]
+            if linescheck3 == "\n":
+                labelslottext3 = "Це збереження пусте"
+            else:
+                labelslottext3 = f"Час: {lines[11].replace("\n", "")}\nОбрана країна: {lines[9].replace("\n", "")}"
+
+            linescheck2 = lines[5]
+            if linescheck2 == "\n":
+                labelslottext2 = "Це збереження пусте"
+            else:
+                labelslottext2 = f"Час: {lines[7].replace("\n", "")}\nОбрана країна: {lines[5].replace("\n", "")}"
+
+            linescheck1 = lines[1]
+            if linescheck1 == "\n":
+                labelslottext1 = "Це збереження пусте"
+            else:
+                labelslottext1 = f"Час: {lines[3].replace("\n", "")}\nОбрана країна: {lines[1].replace("\n", "")}"
+            labelslot1.configure(text=labelslottext1)
+            labelslot1.place(relx=0.25, rely=0.4, anchor="center")
+            buttonslot1.place(relx=0.25, rely=0.7, anchor="center")
+
+            labelslot2.configure(text=labelslottext2)
+            labelslot2.place(relx=0.5, rely=0.4, anchor="center")
+            buttonslot2.place(relx=0.5, rely=0.7, anchor="center")
+
+            labelslot3.configure(text=labelslottext3)
+            labelslot3.place(relx=0.75, rely=0.4, anchor="center")
+            buttonslot3.place(relx=0.75, rely=0.7, anchor="center")
+            def nextWW2(choice):
+                global savechoice, playercountry
+                savechoice = choice
+                labelslot1.place_forget()
+                buttonslot1.place_forget()
+                labelslot2.place_forget()
+                buttonslot2.place_forget()
+                labelslot3.place_forget()
+                buttonslot3.place_forget()
+                rootbg.create_image(700, 400, image=rootingameimage, anchor="center")
+                rootbg.pack(fill="both", expand=True)
+                gameframe.place(relx=0.5, rely=0.5, anchor="center")
+                cellwidth = 65
+                cellheight = 65
+                cellspacing = 66
+                buttindex = 0
+                for i in range(ROWS):
+                    for j in range(COLS):
+                        index = i * COLS + j
+                        color = wpt.cell_colors_WW2[index]
+                        newcell = wpt.cell_structure_WW2[index]
+                        newtextcolor = wpt.font_colors_WW2[color]
+                        countryininfo = wpt.country_colors_invert_WW2[color]
+                        if newcell == "0":
+                            continue
+                        if newcell == "1":
+                            cellwidth = CELLWIDTHBASIC
+                            cellheight = CELLHEIGHTBASIC
+                        if newcell == "2":
+                            cellwidth = CELLWIDTHBASIC * 4 + 3
+                            cellheight = CELLHEIGHTBASIC
+                        if newcell == "3":
+                            cellwidth = CELLWIDTHBASIC * 2 + 1
+                            cellheight = CELLHEIGHTBASIC * 2 + 1
+                        if newcell == "4":
+                            cellwidth = CELLWIDTHBASIC
+                            cellheight = CELLHEIGHTBASIC * 3 + 2
+                        if newcell == "5":
+                            cellwidth = CELLWIDTHBASIC * 2 + 1
+                            cellheight = CELLHEIGHTBASIC * 3 + 2
+                        if newcell == "6":
+                            cellwidth = CELLWIDTHBASIC * 2 + 1
+                            cellheight = CELLHEIGHTBASIC
+                        if newcell == "7":
+                            cellwidth = CELLWIDTHBASIC
+                            cellheight = CELLHEIGHTBASIC * 2 + 1
+                        if newcell == "8":
+                            cellwidth = CELLWIDTHBASIC * 3 + 2
+                            cellheight = CELLHEIGHTBASIC
+                        if countryininfo == "Море":
+                            textingamebutton = ""
+                        else:
+                            textingamebutton = countryininfo
+                        font_size = (cellwidth * 8) / 65
+                        btn = ctk.CTkButton(gameframe, text=textingamebutton, fg_color=color,
+                                            width=cellwidth, height=cellheight,
+                                            command=lambda indexdef=buttindex: on_left_click(indexdef),
+                                            font=("Arial", font_size, "bold"),
+                                            text_color=newtextcolor)
+                        x = j * cellspacing
+                        y = i * cellspacing
+                        btn.place(x=x, y=y, anchor="nw")
+                        playercontrybtn = False
+                        if countryininfo == playercountry["name"]:
+                            playercontrybtn = True
+                        if countryininfo != playercountry["name"]:
+                            playercontrybtn = False
+                        btn.info = {"Shaft": 0,
+                                    "Bank": 0,
+                                    "Armybuildings": 0,
+                                    "Army": 0,
+                                    "University": 0,
+                                    "Country": countryininfo,
+                                    "Index": index,
+                                    "War": False,
+                                    "Playercountrybtn": playercontrybtn,
+                                    "Canmove": True}
+                        buttonslist.append(btn)
+                        buttindex = buttindex + 1
+                gameframe.configure(width=923, height=659)
+                newslabel1.place(relx=0.915, rely=0.2, anchor="center")
+                newslabel2.place(relx=0.915, rely=0.55, anchor="center")
+                moneylabel.configure(text=f"Грошей\n{playercountry.get("money")} (+{playercountry.get("moneyprofit") - playercountry.get("expenses")})")
+                moneylabel.place(relx=0.292, rely=0.045, anchor="center")
+                playercountrymove.configure(text=f"Обрана дія\nПорожньо")
+                playercountrymove.place(relx=0.5, rely=0.045, anchor="center")
+                researchpointslabel.configure(text=f"Очків дослідження\n{playercountry.get("researchpoint")} (+{playercountry.get("researchpointprofit")})")
+                researchpointslabel.place(relx=0.708, rely=0.045, anchor="center")
+
+                def armyresearch(name):
+                    if name == 1:
+                        if playercountry.get("armyresearch") == 0 and playercountry.get("researchpoint") >= 5:
+                            playercountry["armyresearch"] = 2
+                            playercountry["researchpoint"] = playercountry["researchpoint"] - 5
+                            armyresearchbutton1.configure(fg_color="gray", text=f"Дослідження військ 1 (5/5)\nCила військ x2")
+                            researchpointslabel.configure(text=f"Очків дослідження\n{playercountry.get("researchpoint")} (+{playercountry.get("researchpointprofit")})")
+                        else:
+                            return
+                    if name == 2:
+                        if playercountry.get("armyresearch") == 2 and playercountry.get("researchpoint") >= 25:
+                            playercountry["armyresearch"] = 3
+                            playercountry["researchpoint"] = playercountry["researchpoint"] - 25
+                            armyresearchbutton2.configure(fg_color="gray", text=f"Дослідження військ 2 (25/25)\nCила військ x3")
+                            researchpointslabel.configure(text=f"Очків дослідження\n{playercountry.get("researchpoint")} (+{playercountry.get("researchpointprofit")})")
+                        else:
+                            return
+                    if name == 3:
+                        if playercountry.get("armyresearch") == 3 and playercountry.get("researchpoint") >= 70:
+                            playercountry["armyresearch"] = 4
+                            playercountry["researchpoint"] = playercountry["researchpoint"] - 70
+                            armyresearchbutton3.configure(fg_color="gray", text=f"Дослідження військ 3 (70/70)\nCила військ x4")
+                            researchpointslabel.configure(text=f"Очків дослідження\n{playercountry.get("researchpoint")} (+{playercountry.get("researchpointprofit")})")
+                        else:
+                            return
+                    if name == 4:
+                        if playercountry.get("armyresearch") == 4 and playercountry.get("researchpoint") >= 150:
+                            playercountry["armyresearch"] = 5
+                            playercountry["researchpoint"] = playercountry["researchpoint"] - 150
+                            armyresearchbutton4.configure(fg_color="gray", text=f"Дослідження військ 4 (150/150)\nCила військ x5")
+                            researchpointslabel.configure(text=f"Очків дослідження\n{playercountry.get("researchpoint")} (+{playercountry.get("researchpointprofit")})")
+
+                        else:
+                            return
+                    if name == 5:
+                        if playercountry.get("armyresearch") == 5 and playercountry.get("researchpoint") >= 300:
+                            playercountry["armyresearch"] = 10
+                            playercountry["researchpoint"] = playercountry["researchpoint"] - 300
+                            armyresearchbutton5.configure(fg_color="gray", text=f"Дослідження військ 5 (300/300)\nCила військ x10")
+                            researchpointslabel.configure(text=f"Очків дослідження\n{playercountry.get("researchpoint")} (+{playercountry.get("researchpointprofit")})")
+                        else:
+                            return
+
+
+                armyresearchbutton1.configure(command=lambda name=1: armyresearch(name))
+                armyresearchbutton1.place(relx=0.085, rely=0.12, anchor="center")
+                armyresearchbutton2.configure(command=lambda name=2: armyresearch(name))
+                armyresearchbutton2.place(relx=0.085, rely=0.2, anchor="center")
+                armyresearchbutton3.configure(command=lambda name=3: armyresearch(name))
+                armyresearchbutton3.place(relx=0.085, rely=0.28, anchor="center")
+                armyresearchbutton4.configure(command=lambda name=4: armyresearch(name))
+                armyresearchbutton4.place(relx=0.085, rely=0.36, anchor="center")
+                armyresearchbutton5.configure(command=lambda name=5: armyresearch(name))
+                armyresearchbutton5.place(relx=0.085, rely=0.44, anchor="center")
+
+
+
+
+        buttonslot1.configure(command=lambda choice=1: nextWW2(choice))
+        buttonslot2.configure(command=lambda choice=2: nextWW2(choice))
+        buttonslot3.configure(command=lambda choice=3: nextWW2(choice))
+
+
+    def newgamebutton2def():
+        newgamebutton1.place_forget()
+        newgamebutton2.place_forget()
+        newgamechoose1.place_forget()
+        newgamechoose2.place_forget()
+        newgamechoose3.place_forget()
+        newgamechoose4.place_forget()
+        mainmenu()
+    def newgamechoose1def():
+        pass
+    newgamebutton1.configure(command=newgamebutton1def)
+    newgamebutton1.place(relx=0.5, rely=0.55, anchor="center")
+    newgamechoose1.place(relx=0.4, rely=0.622, anchor="center")
+    newgamechoose2.place(relx=0.6, rely=0.622, anchor="center")
+    newgamechoose2.configure(command=yearchoice)
+    newgamechoose3.place(relx=0.6, rely=0.67, anchor="center")
+    newgamebutton2.configure(command=newgamebutton2def)
+    newgamebutton2.place(relx=0.5, rely=0.85, anchor="center")
+def mainmenuupload():
+    pass
+
+
+
+
+def on_left_click(indexdef):
+    global playercountry, buttonslist, currentaction, currentactionin4, tempcolor, mainbuttonindex
+
+    def commandplayer(commandnumb):
+        global playercountry, buttonslist
+        if commandnumb == 0:
+            if buttonslist[indexdef].info.get("Shaft") < 5:
+                if playercountry.get("money") >= 2000:
+                    buttonslist[indexdef].info["Shaft"] = buttonslist[indexdef].info.get("Shaft") + 1
+                    playercountry["moneyprofit"] = playercountry.get("moneyprofit") + 100
+                    playercountry["money"] = playercountry.get("money") - 2000
+                    moneylabel.configure(text=f"Грошей\n{playercountry.get("money")} (+{playercountry.get("moneyprofit") - playercountry.get("expenses")})")
+                else:
+                    messagebox.showerror("Warpy", "У вас замало грошей, ви не можете побудувати шахту!")
+                    return
+            else:
+                messagebox.showerror("Warpy", "У вас вже стоїть максимальна кількість шахт!")
+                return
+        if commandnumb == 1:
+            if buttonslist[indexdef].info.get("Bank") < 3:
+                if playercountry.get("money") >= 4000:
+                    buttonslist[indexdef].info["Bank"] = buttonslist[indexdef].info.get("Bank") + 1
+                    playercountry["moneyprofit"] = playercountry.get("moneyprofit") + 150
+                    playercountry["money"] = playercountry.get("money") - 4000
+                    moneylabel.configure(text=f"Грошей\n{playercountry.get("money")} (+{playercountry.get("moneyprofit") - playercountry.get("expenses")})")
+                else:
+                    messagebox.showerror("Warpy", "У вас замало грошей, ви не можете побудувати банк!")
+                    return
+            else:
+                messagebox.showerror("Warpy", "У вас вже стоїть максимальна кількість банків!")
+                return
+        if commandnumb == 2:
+            if buttonslist[indexdef].info.get("University") < 1:
+                if playercountry.get("money") >= 10000:
+                    buttonslist[indexdef].info["University"] = buttonslist[indexdef].info.get("University") + 1
+                    playercountry["researchpointprofit"] = playercountry.get("researchpointprofit") + 1
+                    playercountry["money"] = playercountry.get("money") - 10000
+                    moneylabel.configure(text=f"Грошей\n{playercountry.get("money")} (+{playercountry.get("moneyprofit") - playercountry.get("expenses")})")
+                    researchpointslabel.configure(text=f"Очків дослідження\n{playercountry.get("researchpoint")} (+{playercountry.get("researchpointprofit")})")
+                else:
+                    messagebox.showerror("Warpy", "У вас замало грошей, ви не можете побудувати унііверситет!")
+                    return
+            else:
+                messagebox.showerror("Warpy", "У вас вже стоїть максимальна кількість університетів!")
+                return
+        if commandnumb == 4:
+            if buttonslist[indexdef].info.get("Army") < 10000:
+                if playercountry.get("money") < 10000:
+                    sliderslidermax = playercountry.get("money")
+                    slidermaxcomparison = 10000 - buttonslist[indexdef].info.get("Army")
+                    if sliderslidermax >= slidermaxcomparison:
+                        sliderslidermax = slidermaxcomparison
+                    if sliderslidermax <= 0:
+                        messagebox.showerror("Warpy", "У вас замало грошей, ви не можете найняти воїнів")
+                        return
+                else:
+                    sliderslidermax = 10000 - buttonslist[indexdef].info.get("Army")
+                def confirmplayer4():
+                    global currentactionin4, playercountry, isitsame
+                    if not currentactionin4:
+                        if (playercountry.get("moneyprofit") - playercountry.get("expenses")) <= 0 or (playercountry.get("moneyprofit") - playercountry.get("expenses") - int(sliderslider.get())) <= 0:
+                            messagebox.showerror("Warpy", "Ви не потягнете стільки воїнів, ви впевнені що хочете їх найняти? Натисніть ще раз щоб підтвердити ваш вибір.")
+                            currentactionin4 = True
+                            isitsame = int(sliderslider.get())
+                            return
+                    else:
+                        if isitsame != int(sliderslider.get()):
+                            if (playercountry.get("moneyprofit") - playercountry.get("expenses")) <= 0 or (
+                                    playercountry.get("moneyprofit") - playercountry.get("expenses") - int(
+                                    sliderslider.get())) <= 0:
+                                messagebox.showerror("Warpy",
+                                                     "Ви не потягнете стільки воїнів, ви впевнені що хочете їх найняти? Натисніть ще раз щоб підтвердити ваш вибір.")
+                                currentactionin4 = True
+                                isitsame = int(sliderslider.get())
+                            return
+                    currentactionin4 = False
+                    sliderslider.place_forget()
+                    sliderbuttonlabel.place_forget()
+                    sliderbuttonconfirm.place_forget()
+                    sliderbuttonexit.place_forget()
+                    sliderframe.place_forget()
+                    buttonslist[indexdef].info["Army"] = buttonslist[indexdef].info.get("Army") + int(sliderslider.get())
+                    playercountry["expenses"] = playercountry.get("expenses") + int(sliderslider.get())
+                    playercountry["money"] = playercountry.get("money") - int(sliderslider.get())
+                    buttonslist[indexdef].configure(text=f"{buttonslist[indexdef].info.get("Country")}\n{buttonslist[indexdef].info.get("Army")}")
+                    moneylabel.configure(text=f"Грошей\n{playercountry.get("money")} (+{playercountry.get("moneyprofit") - playercountry.get("expenses")})")
+                    currentactionin4 = False
+
+                sliderslider.set(0)
+                sliderslider.configure(from_=1, to=sliderslidermax,
+                                       command=lambda value: sliderbuttonlabel.configure(text=int(value)))
+                sliderslider.place(relx=0.5, rely=0.5, anchor="center")
+                sliderbuttonlabel.place(relx=0.5, rely=0.6, anchor="center")
+                sliderbuttonconfirm.configure(command=confirmplayer4)
+                sliderbuttonconfirm.place(relx=0.5, rely=0.7, anchor="center")
+                sliderbuttonexit.configure(command=exitbutton)
+                sliderbuttonexit.place(relx=0.5, rely=0.9, anchor="center")
+                sliderframe.configure(height=400, width=700)
+                sliderframe.place(relx=0.5, rely=0.5, anchor="center")
+        if commandnumb == 5:
+            global currentaction, mainbuttonindex, slidervalue, tempcolor
+            if buttonslist[indexdef].info.get("Army") > 0:
+                if buttonslist[indexdef].info.get("Canmove"):
+                    mainbuttonindex = indexdef
+                    tempcolor = buttonslist[mainbuttonindex].cget("fg_color")
+
+
+                    buttonslist[mainbuttonindex].configure(fg_color="orange red")
+                    playercountrymove.configure(
+                        text=f"Обрана дія (для відміни натисніть на ту саму кнопку)\nПеревезти воїнів на іншу позицію",
+                        font=("Arial", 10, "bold"))
+                    buttonslist[mainbuttonindex].configure(fg_color="orange red")
+                    currentaction = True
+                else:
+                    messagebox.showerror("Warpy", "У вас ще не має воїнів в цьому місці.")
+                    return
+
+        if commandnumb == 6:
+            if buttonslist[indexdef].info.get("Army") > 0:
+                def confirmplayer6():
+                    sliderslider.place_forget()
+                    sliderbuttonlabel.place_forget()
+                    sliderbuttonconfirm.place_forget()
+                    sliderbuttonexit.place_forget()
+                    sliderframe.place_forget()
+                    buttonslist[indexdef].info["Army"] = buttonslist[indexdef].info.get("Army") - int(sliderslider.get())
+                    playercountry["expenses"] = playercountry.get("expenses") - int(sliderslider.get())
+                    if buttonslist[indexdef].info.get("Army") > 0:
+                        buttonslist[indexdef].configure(text=f"{buttonslist[indexdef].info.get("Country")}\n{buttonslist[indexdef].info.get("Army")}")
+                    else:
+                        buttonslist[indexdef].configure(text=f"{buttonslist[indexdef].info.get("Country")}")
+                    moneylabel.configure(text=f"Грошей\n{playercountry.get("money")} (+{playercountry.get("moneyprofit") - playercountry.get("expenses")})")
+                sliderslider.set(0)
+                sliderslider.configure(from_=1, to=(int(buttonslist[indexdef].info["Army"])),
+                                       command=lambda value: sliderbuttonlabel.configure(text=int(value)))
+                sliderslider.place(relx=0.5, rely=0.5, anchor="center")
+                sliderbuttonlabel.place(relx=0.5, rely=0.6, anchor="center")
+                sliderbuttonconfirm.configure(command=confirmplayer6)
+                sliderbuttonconfirm.place(relx=0.5, rely=0.7, anchor="center")
+                sliderbuttonexit.configure(command=exitbutton)
+                sliderbuttonexit.place(relx=0.5, rely=0.9, anchor="center")
+                sliderframe.configure(height=400, width=700)
+                sliderframe.place(relx=0.5, rely=0.5, anchor="center")
+            else:
+                messagebox.showerror("Warpy", "У вас ще не має воїнів в цьому місці.")
+                return
+
+    def exitbutton():
+        sliderslider.place_forget()
+        sliderbuttonlabel.place_forget()
+        sliderbuttonconfirm.place_forget()
+        sliderbuttonexit.place_forget()
+        sliderframe.place_forget()
+
+    if not currentaction:
+        if buttonslist[indexdef].info.get("Playercountrybtn"):
+            contextmenu_playercountry.entryconfig(0,
+                                                  label=f"Побудувати шахту                                     (Дохід +100, {buttonslist[indexdef].info.get("Shaft")}/5 збудовано, вартість/шт: 2000)",
+                                                  command=lambda: commandplayer(0))
+            contextmenu_playercountry.entryconfig(1,
+                                                  label=f"Побудувати банк                                        (Дохід +150, {buttonslist[indexdef].info.get("Bank")}/3 збудовано, вартість/шт: 3500)",
+                                                  command=lambda: commandplayer(1))
+            contextmenu_playercountry.entryconfig(2,
+                                                  label=f"Побудувати університет                           (Дохід очків дослідження +1, {buttonslist[indexdef].info.get("University")}/1 збудовано, вартість/шт: 10000)",
+                                                  command=lambda: commandplayer(2))
+            contextmenu_playercountry.entryconfig(3,
+                                                  label=f"Побудувати військову інфраструктуру (В розробці)",
+                                                  command=lambda: commandplayer(3))
+            contextmenu_playercountry.entryconfig(4,
+                                                  label=f"Найняти військо                                         ({buttonslist[indexdef].info.get("Army")}/10000 няйнято, 1 військовий - 1 витрата)",
+                                                  command=lambda: commandplayer(4))
+            contextmenu_playercountry.entryconfig(5,
+                                                  label=f"Перемістити військо                                 (Не в своїй країні = оголошення війни)",
+                                                  command=lambda: commandplayer(5))
+            contextmenu_playercountry.entryconfig(6,
+                                                  label=f"Звільнити військо                                      (Доступно для звільнення: {buttonslist[indexdef].info.get("Army")})",
+                                                  command=lambda: commandplayer(6))
+            x = root.winfo_pointerx()
+            y = root.winfo_pointery()
+            contextmenu_playercountry.tk_popup(x, y)
+    else:
+        if buttonslist[indexdef].info.get("Playercountrybtn"):
+            if buttonslist[indexdef].info.get("Army") < 10000:
+                if indexdef == mainbuttonindex:
+                    currentaction = False
+                    buttonslist[mainbuttonindex].configure(fg_color=tempcolor)
+                    playercountrymove.configure(text=f"Обрана дія\nПорожньо")
+                    return
+                else:
+                    def confirmplayer5():
+                        global slidervalue, currentaction, mainbuttonindex
+                        sliderslider.place_forget()
+                        sliderbuttonlabel.place_forget()
+                        sliderbuttonconfirm.place_forget()
+                        sliderbuttonexit.place_forget()
+                        sliderframe.place_forget()
+                        slidervalue = int(sliderslider.get())
+                        buttonslist[indexdef].info["Army"] = buttonslist[indexdef].info.get("Army") - int(
+                            sliderslider.get())
+                        if buttonslist[mainbuttonindex].info.get("Army") > 0:
+                            buttonslist[mainbuttonindex].configure(text=f"{buttonslist[mainbuttonindex].info.get("Country")}\n{buttonslist[mainbuttonindex].info.get("Army")}")
+                        else:
+                            buttonslist[mainbuttonindex].configure(text=f"{buttonslist[mainbuttonindex].info.get("Country")}")
+
+
+                    if buttonslist[indexdef].info.get("Army") < 10000:
+                        if playercountry.get("money") < 10000:
+                            slidermaxcomparison = 10000 - buttonslist[indexdef].info.get("Army")
+                            if sliderslidermax >= slidermaxcomparison:
+                                sliderslidermax = slidermaxcomparison
+                            if sliderslidermax <= 0:
+                                messagebox.showerror("Warpy", "У вас замало грошей, ви не можете найняти воїнів")
+                                return
+                        else:
+                            sliderslidermax = 10000 - buttonslist[indexdef].info.get("Army")
+
+
+                    sliderslider.set(0)
+                    sliderslider.configure(from_=1, to=(int(buttonslist[indexdef].info["Army"])),
+                                           command=lambda value: sliderbuttonlabel.configure(text=int(value)))
+                    sliderslider.place(relx=0.5, rely=0.5, anchor="center")
+                    sliderbuttonlabel.place(relx=0.5, rely=0.6, anchor="center")
+                    sliderbuttonconfirm.configure(command=confirmplayer5)
+                    sliderbuttonconfirm.place(relx=0.5, rely=0.7, anchor="center")
+                    sliderbuttonexit.configure(command=exitbutton)
+                    sliderbuttonexit.place(relx=0.5, rely=0.9, anchor="center")
+                    sliderframe.configure(height=400, width=700)
+                    sliderframe.place(relx=0.5, rely=0.5, anchor="center")
+
+    # x = root.winfo_pointerx()
+    # y = root.winfo_pointery()
+
+
+# contextmenu_playercountry.tk_popup(x, y)
+
+# btn.info = {"Shaft": 0,
+#                                     "Bank": 0,
+#                                     "Armybuildings": 0,
+#                                     "Army": 0,
+#                                     "Country": countryininfo,
+#                                     "Index": index,
+#                                     "War": False,
+#                                     "Warwith": None,
+#                                     "Playercountrybtn": playercontrybtn}
+# theme_menu.entryconfig("Світла тема", label="123")
+
+root.mainloop()
+
+# print(buttonslist[indexdef].info.get("Index"))
+# print(buttonslist[indexdef].info.get("Country"))
+# print(buttonslist[indexdef].info.get("Playercountrybtn"))
+

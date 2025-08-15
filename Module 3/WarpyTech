@@ -1,0 +1,62 @@
+# root.update()
+# max_x = max(btn.winfo_x() + btn.winfo_width() for btn in buttonslist)
+# max_y = max(btn.winfo_y() + btn.winfo_height() for btn in buttonslist)
+
+cell_structure_WW2 = [
+    "2", "0", "0", "0", "3", "0", "1", "4", "5", "0", "6", "0", "5", "0",
+    "6", "0", "6", "0", "0", "0", "7", "0", "0", "0", "3", "0", "0", "0",
+    "6", "0", "3", "0", "3", "0", "0", "0", "0", "0", "0", "0", "0", "0",
+    "6", "0", "0", "0", "0", "0", "6", "0", "8", "0", "0", "4", "6", "0",
+    "1", "6", "0", "6", "0", "3", "0", "6", "0", "3", "0", "0", "7", "1",
+    "8", "0", "0", "6", "0", "0", "0", "6", "0", "0", "0", "0", "0", "1",
+    "6", "0", "8", "0", "0", "3", "0", "3", "0", "8", "0", "0", "6", "0",
+    "1", "7", "1", "6", "0", "0", "0", "0", "0", "1", "6", "0", "1", "7",
+    "7", "0", "3", "0", "8", "0", "0", "6", "0", "3", "0", "6", "0", "0",
+    "0", "1", "0", "0", "1", "2", "0", "0", "0", "0", "0", "8", "0", "0"
+]
+
+
+
+cell_colors_WW2 = [
+    "RoyalBlue", "RoyalBlue", "RoyalBlue", "RoyalBlue", "grey8", "grey8", "grey8", "LemonChiffon1", "red", "red", "red", "red", "red", "red",
+    "grey8", "grey8", "grey8", "grey8", "grey8", "grey8", "LemonChiffon1", "LemonChiffon1", "red", "red", "red", "red", "red", "red",
+    "grey8", "grey8", "LemonChiffon1", "LemonChiffon1", "LemonChiffon1", "LemonChiffon1", "LemonChiffon1", "LemonChiffon1", "red", "red", "red", "red", "red", "red",
+    "grey8", "grey8", "LemonChiffon1", "LemonChiffon1", "LemonChiffon1", "LemonChiffon1", "LemonChiffon1", "LemonChiffon1", "red", "red", "red", "red", "red", "red",
+    "LightSeaGreen", "LightSeaGreen", "LightSeaGreen", "LemonChiffon1", "LemonChiffon1", "LemonChiffon1", "LemonChiffon1", "red", "red", "red", "red", "red", "red", "red",
+    "LightSeaGreen", "LightSeaGreen", "LightSeaGreen", "LightSeaGreen", "LightSeaGreen", "LemonChiffon1", "LemonChiffon1", "red", "red", "red", "red", "red", "red", "red",
+    "LightGreen", "LightGreen", "OliveDrab3", "OliveDrab3", "OliveDrab3", "orange1", "orange1", "orange1", "orange1", "red", "red", "red", "red", "red",
+    "LightGreen", "magenta", "OliveDrab3", "OliveDrab3", "OliveDrab3", "orange1", "orange1", "orange1", "orange1", "red", "red", "red", "RoyalBlue", "red",
+    "RoyalBlue", "magenta", "magenta", "magenta", "orange1", "orange1", "orange1", "orange1", "orange1", "RoyalBlue", "RoyalBlue", "red", "red", "red",
+    "RoyalBlue", "RoyalBlue", "magenta", "magenta", "magenta", "orange1", "orange1", "orange1", "orange1", "RoyalBlue", "RoyalBlue", "RoyalBlue", "RoyalBlue", "RoyalBlue"
+]
+
+country_colors_WW2 = {"СРСР":"red",
+                      "Польща":"LemonChiffon1",
+                      "Чехословач.":"LightSeaGreen",
+                      "Австрія":"LightGreen",
+                      "Угорщина":"OliveDrab3",
+                      "Югославія":"magenta",
+                      "Румунія":"orange1",
+                      "Німеччина":"grey8",
+                      "Море": "RoyalBlue"}
+
+country_colors_invert_WW2 = {"red":"СРСР",
+                      "LemonChiffon1":"Польща",
+                      "LightSeaGreen":"Чехословач.",
+                      "LightGreen":"Австрія",
+                      "OliveDrab3":"Угорщина",
+                      "magenta":"Югославія",
+                      "orange1":"Румунія",
+                      "grey8":"Німеччина",
+                      "RoyalBlue": "Море"}
+
+font_colors_WW2 = {"red":"white",
+                   "LemonChiffon1":"black",
+                   "LightSeaGreen":"white",
+                   "LightGreen":"black",
+                   "OliveDrab3":"black",
+                   "magenta":"white",
+                   "orange1":"black",
+                   "grey8":"white",
+                   "RoyalBlue": "white"}
+# index = row * num_cols + col
