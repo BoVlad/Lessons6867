@@ -1,0 +1,124 @@
+import tkinter as tk
+from tkinter import messagebox
+import time
+import keyboard
+import mouse
+
+running = False
+delay = 0
+hotrunval = False
+HEIGHT_SIZE = 350
+WIDTH_SIZE = 300
+
+root = tk.Tk()
+root.title("Auto Clicker")
+root.geometry("350x300")
+root.config(bg="#DFF7F8")
+root.resizable(False, False)
+
+Label1 = tk.Label(root,
+                  text="AutoClicker",
+                  fg="#057A72",
+                  font=("Bahnschrift", 30),
+                  bg="#DFF7F8")
+Label1.place(relx=0.5, rely=0.1,
+             anchor="center")
+
+
+Label2 = tk.Label(root,
+                  text="Кліків на секунду:",
+                  fg="#057A72",
+                  font=("Arial", 16),
+                  bg="#DFF7F8")
+Label2.place(relx=0.5, rely=0.35,
+             anchor="center")
+
+
+entry1 = tk.Entry(root,
+                 font=("Arial", 16))
+entry1.place(relx=0.5, rely=0.5,
+             anchor="center")
+
+
+
+def start_autoclicker():
+    tk.messagebox.showinfo("AutoClicker", "Автоклікер запущено!")
+    global running, delay
+    clicks_per_second = int(entry1.get())
+    delay = 1 / clicks_per_second
+    running = True
+    schedule_click()
+
+def schedule_click():
+    while running:
+        mouse.click()
+        time.sleep(delay)
+
+def stop_autoclicker():
+    global running, delay
+    running = False
+    delay = 0
+    tk.messagebox.showinfo("AutoClicker", "Автоклікер зупинено!")
+
+def show_info(event):
+    tk.messagebox.showinfo("AutoClicker", "Це автоклікер, він буде клікати мишкою зі швидкістю, яку ти вкажеш!")
+
+
+Button1 = tk.Button(root,
+                  text="Почати",
+                  fg="white",
+                  font=("Arial", 16),
+                  bg="#4DAF51",
+                  padx=20, pady=5,
+                  command=start_autoclicker)
+Button1.place(relx=0.3, rely=0.8,
+             anchor="center")
+def button1_color_in(event):
+    event.widget.config(bg="blue")
+def button1_color_out(event):
+    event.widget.config(bg="#4DAF51")
+Button1.bind("<Enter>", button1_color_in)
+Button1.bind("<Leave>", button1_color_out)
+
+Button2 = tk.Button(root,
+                  text="Зупинити",
+                  fg="white",
+                  font=("Arial", 16),
+                  bg="#F34235",
+                  padx=10, pady=5,
+                  command=stop_autoclicker)
+Button2.place(relx=0.7, rely=0.8,
+             anchor="center")
+def button2_color_in(event):
+    event.widget.config(bg="blue")
+def button2_color_out(event):
+    event.widget.config(bg="#F34235")
+Button2.bind("<Enter>", button2_color_in)
+Button2.bind("<Leave>", button2_color_out)
+
+def exit_app():
+    global running
+    running = False
+    messagebox.showinfo("Auto Clicker", "Auto Clicker зупинено.")
+
+def hotrun():
+    global hotrunval
+    if not hotrunval:
+        start_autoclicker()
+        hotrunval = True
+    if hotrunval:
+        stop_autoclicker()
+        hotrunval = False
+
+
+keyboard.add_hotkey('esc', exit_app)
+keyboard.add_hotkey('-', hotrun)
+
+root.bind("i", show_info)
+
+
+root.mainloop()
+
+
+
+

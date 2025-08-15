@@ -1,0 +1,78 @@
+import customtkinter as ctk
+from tkinter import messagebox
+
+BTC_TO_UAH = 4921505.87
+ETH_TO_UAH = 149899.01
+USDT_TO_UAH = 41.83
+USD_TO_UAH = 41.82
+EUR_TO_UAH = 49.03
+
+def convert():
+    fromcur = from_currency_menu.get()
+    tocur = to_currency_menu.get()
+    entry = entry_amount.get()
+    fromcuramount = 0
+    tocuramount = 0
+    if entry.isdigit():
+        entry = int(entry)
+        if fromcur == "BTC":
+            fromcuramount = entry * BTC_TO_UAH
+        if fromcur == "ETH":
+            fromcuramount = entry * ETH_TO_UAH
+        if fromcur == "USDT":
+            fromcuramount = entry * USDT_TO_UAH
+        if fromcur == "USD":
+            fromcuramount = entry * USD_TO_UAH
+        if fromcur == "EUR":
+            fromcuramount = entry * EUR_TO_UAH
+        if fromcur == "UAH":
+            fromcuramount = entry
+
+        if tocur == "BTC":
+            tocuramount = fromcuramount / BTC_TO_UAH
+        if tocur == "ETH":
+            tocuramount = fromcuramount / ETH_TO_UAH
+        if tocur == "USDT":
+            tocuramount = fromcuramount / USDT_TO_UAH
+        if tocur == "USD":
+            tocuramount = fromcuramount / USD_TO_UAH
+        if tocur == "EUR":
+            tocuramount = fromcuramount / EUR_TO_UAH
+        if tocur == "UAH":
+            tocuramount = fromcuramount
+
+        result_label.configure(text=tocuramount)
+    else:
+        result_label.configure(text="Помилка, введіть лише цифру")
+
+def show_info(event):
+    messagebox.showinfo("Інфо", "Це конвертер валют. В верхньому меню ви вибираєте тип валюти, ЯКИЙ ВИ ВВЕЛИ в поле вводу."
+                                "В нижньому меню ви вибираєте валюту, В ЯКУ КОНВЕРТУВАТИ введену валюту. Нижче показується результат.")
+
+app = ctk.CTk()
+app.title("Конвертер криптовалют | 'i' для допомоги")
+app.geometry("400x300")
+
+title_label = ctk.CTkLabel(app, text="Конвертер криптовалют", font=("Roboto", 18))
+title_label.pack(pady=10)
+
+entry_amount = ctk.CTkEntry(app, placeholder_text="Введи суму")
+entry_amount.pack(pady=10)
+
+from_currency_var = ctk.StringVar(value="BTC")
+from_currency_menu = ctk.CTkOptionMenu(app, variable=from_currency_var, values=["BTC", "ETH", "USDT", "UAH", "USD", "EUR"])
+from_currency_menu.pack(pady=5)
+
+to_currency_var = ctk.StringVar(value="UAH")
+to_currency_menu = ctk.CTkOptionMenu(app, variable=to_currency_var, values=["BTC", "ETH", "USDT", "UAH", "USD", "EUR"])
+to_currency_menu.pack(pady=5)
+
+convert_button = ctk.CTkButton(app, text="Конвертувати", command=convert)
+convert_button.pack(pady=10)
+
+result_label = ctk.CTkLabel(app, text="")
+result_label.pack(pady=10)
+
+app.bind("i", show_info)
+
+app.mainloop()
