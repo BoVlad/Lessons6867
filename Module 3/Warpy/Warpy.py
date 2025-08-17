@@ -630,4 +630,3 @@ root.mainloop()
 # print(buttonslist[indexdef].info.get("Index"))
 # print(buttonslist[indexdef].info.get("Country"))
 # print(buttonslist[indexdef].info.get("Playercountrybtn"))
-
