@@ -115,24 +115,6 @@ class Human:
             return 0
 
 
-class Archer(Human):
-    def __init__(self, level):
-        self.title = "Archer"
-        super().__init__(self.title, 80 + level*20, 95 + level*5, 3, level, 40 + level*5, 300)
-
-
-class Knight(Human):
-    def __init__(self, level):
-        self.title = "Knight"
-        super().__init__(self.title, 80 + level*20, 105 + level*5, 5, level, 45 + level*5, 200)
-
-
-class Wizard(Human):
-    def __init__(self, level):
-        self.title = "Archer"
-        super().__init__(self.title, 80 + level*20, 95 + level*5, 3, level, 40 + level*15, 500)
-
-
 
 enemy1 = Knight(1)
 print(f"Your enemy is {enemy1} \nHP is {enemy1.hp}")
