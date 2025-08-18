@@ -133,7 +133,6 @@ class Wizard(Human):
         super().__init__(self.title, 80 + level*20, 95 + level*5, 3, level, 40 + level*15, 500)
 
 
-# ________________
 
 enemy1 = Knight(1)
 print(f"Your enemy is {enemy1} \nHP is {enemy1.hp}")
